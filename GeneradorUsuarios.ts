@@ -1,12 +1,18 @@
-function GeneratorUser(name:string, lastName: string) {
-    var user = ''
-    var nameUser = name.trim()
-    var lastNameUser = lastName.trim()
-    // Separar nombres y apellidos en partes
-    let nameParts = nameUser.split(' ');
-    let lastNameParts = lastNameUser.split(' ');
+function GeneratorUser(name: string, lastName: string): string {
+    // Validar que los nombres y apellidos no sean cadenas vacías
+    if (!name.trim() || !lastName.trim()) {
+        throw new Error('Name and last name must not be empty.');
+    }
 
-    if(nameParts.length > 1 || lastNameParts.length > 1){
+    let user = '';
+    const nameUser = name.trim();
+    const lastNameUser = lastName.trim();
+
+    // Separar nombres y apellidos en partes
+    const nameParts = nameUser.split(' ');
+    const lastNameParts = lastNameUser.split(' ');
+
+    if (nameParts.length > 1 || lastNameParts.length > 1) {
         // Si hay más de una palabra en el nombre o apellido
         user = nameParts[0].charAt(0); // Primer carácter del primer nombre
         
@@ -29,9 +35,13 @@ function GeneratorUser(name:string, lastName: string) {
         // Si no hay nombres o apellidos compuestos
         user = nameUser.substring(0, 3) + lastNameUser.substring(0, 3);
     }
+
     user = eliminarRepetidosSeguidos(user);
-    const randomNum: number = Math.floor(Math.random() * 100)
-    user = user + randomNum
+
+    // Agregar número aleatorio al final del nombre de usuario
+    const randomNum = Math.floor(Math.random() * 100);
+    user += randomNum;
+
     return user.toLowerCase(); // Convertir a minúsculas para consistencia
 }
 
@@ -52,8 +62,27 @@ function eliminarRepetidosSeguidos(user: string): string {
     return nuevoUser;
 }
 
+// Ejemplos de uso
+try {
+    console.log(GeneratorUser('juan camilo', 'molina')); // Ejemplo: juacammol
+    console.log(GeneratorUser('juan', 'molina castaño')); // Ejemplo: juanmolc
+    console.log(GeneratorUser('juan camilo', 'molina castaño')); // Ejemplo: juacamolc
+    console.log(GeneratorUser('juan', 'molina')); // Ejemplo: juanmol
+    console.log(GeneratorUser('', 'molina')); // Esto debería lanzar un error
+} catch (error) {
+    if (error instanceof Error) {
+        console.error(error.message);
+    } else {
+        console.error('Unknown error occurred');
+    }
+}
 
-console.log(GeneratorUser('juan camilo', 'molina')); // Ejemplo: juacammol
-console.log(GeneratorUser('juan', 'molina castaño')); // Ejemplo: juanmolc
-console.log(GeneratorUser('juan camilo', 'molina castaño')); // Ejemplo: juacamolc
-console.log(GeneratorUser('juan', 'molina')); // Ejemplo: juanmol
+try {
+    console.log(GeneratorUser('juan', '')); // Esto debería lanzar un error
+} catch (error) {
+    if (error instanceof Error) {
+        console.error(error.message);
+    } else {
+        console.error('Unknown error occurred');
+    }
+}
